@@ -1,0 +1,38 @@
+{
+  "name": "lastgood-be",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.ts",
+  "scripts": {
+    "dev": "NODE_ENV=development nodemon --exec ts-node server.ts",
+    "dev:staging": "NODE_ENV=staging nodemon --exec ts-node server.ts",
+    "start": "NODE_ENV=production node dist/server.js",
+    "start:staging": "NODE_ENV=staging node dist/server.js",
+    "build": "tsc",
+    "setup-db": "ts-node scripts/setup-db.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.15.0",
+  "dependencies": {
+    "@fastify/cors": "^11.2.0",
+    "@fastify/postgres": "^6.0.2",
+    "bcrypt": "^6.0.0",
+    "dotenv": "^17.2.3",
+    "fastify": "^5.7.1",
+    "fastify-auth0-verify": "^4.1.0",
+    "jsonwebtoken": "^9.0.3",
+    "nodemon": "^3.1.11",
+    "pg": "^8.17.1"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^6.0.0",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/node": "^25.0.9",
+    "@types/pg": "^8.16.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  }
+}
