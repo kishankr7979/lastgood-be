@@ -10,10 +10,10 @@ export class GitHubWebhookController {
         const eventType = req.headers['x-github-event'];
         const { orgId } = req.params
 
-        console.log(orgId)
+        const allowedEvents = ['push', 'workflow_run', 'page_build'];
 
         // Only care about push events in MVP
-        if (eventType !== 'push') {
+        if (!allowedEvents.includes(eventType as string)) {
             return reply.send({ ignored: true });
         }
 
