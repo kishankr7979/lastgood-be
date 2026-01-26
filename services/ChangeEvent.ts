@@ -2,21 +2,44 @@ import crypto from 'crypto';
 import { ChangeEventModel } from '../models/ChangeEvent';
 import { GitHubChangeEventMapper } from '../mappers/github-events';
 
+
+export interface ChangeEvent {
+    payload: any,
+    eventType: string,
+    organization_id: string,
+    server: any
+}
+
 export class ChangeEventService {
     static async ingestFromGitHub({
-        payload,
-        organization_id,
-        server
-    }: {
-        payload: any;
-        organization_id: string;
-        server: any;
-    }) {
-        // Ignore weird webhook edge cases
-        if (!payload?.head_commit) return;
+                                      payload,
+                                      eventType,
+                                      organization_id,
+                                      server
+                                  }: ChangeEvent) {
+        let normalizedEvent;
 
-        const normalizedEvent =
-            GitHubChangeEventMapper.mapPushEvent(payload);
+        switch (eventType) {
+            case 'push':
+                normalizedEvent =
+                    GitHubChangeEventMapper.mapPushEvent(payload);
+                break;
+
+            case 'deployment':
+                normalizedEvent =
+                    GitHubChangeEventMapper.mapDeploymentEvent(payload);
+                break;
+
+            case 'deployment_status':
+                normalizedEvent =
+                    GitHubChangeEventMapper.mapDeploymentStatusEvent(payload);
+                break;
+
+            default:
+                return; // ignore noise
+        }
+
+        if (!normalizedEvent) return;
 
         const model = new ChangeEventModel(server);
 
@@ -29,7 +52,8 @@ export class ChangeEventService {
             type: normalizedEvent.type,
             source: 'github',
             summary: normalizedEvent.summary,
-            meta: normalizedEvent.meta
+            meta: normalizedEvent.meta,
+            // confidence: normalizedEvent.confidence
         });
     }
 }

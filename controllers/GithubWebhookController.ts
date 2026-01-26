@@ -19,6 +19,7 @@ export class GitHubWebhookController {
 
         await ChangeEventService.ingestFromGitHub({
             payload: req.body,
+            eventType: String(eventType),
             organization_id: orgId,
             server: req.server
         });
