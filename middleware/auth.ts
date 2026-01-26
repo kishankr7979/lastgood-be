@@ -47,10 +47,6 @@ export async function authenticateApiKey(
             apiKey = authHeader;
         }
 
-
-
-
-
         if (!apiKey) {
             return reply.code(401).send({
                 success: false,

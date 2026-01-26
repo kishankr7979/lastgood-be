@@ -87,7 +87,8 @@ export class ApiKeyModel {
     async getById(id: string): Promise<ApiKey | null> {
         const client = await this.fastify.pg.connect();
         try {
-            const { rows } = await client.query('SELECT * FROM api_keys WHERE id = $1', [id]);
+            const { rows } = await client.query('select * from api_keys where organization_id = $1', [id]);
+
             return rows[0] || null;
         } finally {
             client.release();
@@ -112,12 +113,12 @@ export class ApiKeyModel {
         try {
             // Generate API key and hash
             const apiKey = ApiKeyModel.generateApiKey();
-            const keyHash = ApiKeyModel.hashApiKey(apiKey);
+
 
             const { rows } = await client.query(
                 `INSERT INTO api_keys (organization_id, name, key_hash) 
          VALUES ($1, $2, $3) RETURNING *`,
-                [keyData.organization_id, keyData.name, keyHash]
+                [keyData.organization_id, keyData.name, apiKey]
             );
 
             const createdKey = rows[0];

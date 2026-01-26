@@ -6,11 +6,10 @@ export default async function apiKeyRoutes(fastify: FastifyInstance) {
     // Add JWT authentication middleware to all routes
     fastify.addHook('preHandler', authenticateJWT);
 
-    // GET /api-keys - Get all API keys for the authenticated organization
-    // fastify.get('/api-keys', ApiKeyController.getAllApiKeys);
+    fastify.post('/api-keys/create', ApiKeyController.createApiKey);
 
-    // // GET /api-keys/:id - Get API key by ID
-    // fastify.get('/api-keys/:id', ApiKeyController.getApiKeyById);
+    // // GET /api-keys/:id - Get API key by orgId
+    fastify.get('/api-keys/:id', ApiKeyController.getApiKeyById);
 
     // // POST /api-keys - Create new API key
     // fastify.post('/api-keys', ApiKeyController.createApiKey);

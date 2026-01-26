@@ -3,7 +3,6 @@ import { UserModel } from '../models/Users';
 import jwt from 'jsonwebtoken';
 import config from '../config/environment';
 import { OrganizationModel } from '../models/Organization';
-import { ApiKeyModel } from '../models/ApiKey';
 
 export class UserController {
     // Signup - Unprotected
@@ -51,8 +50,6 @@ export class UserController {
 
             const orgModel = new OrganizationModel(request.server);
 
-            const apiKeyModel = new ApiKeyModel(request.server);
-
             // Check if user already exists
             const existingUser = await userModel.findByEmail(email);
             if (existingUser) {
@@ -81,10 +78,6 @@ export class UserController {
             });
 
 
-            const defaultApiKey = await apiKeyModel.createDefaultKey(
-                org.id,
-                org.name
-            );
 
             // Remove password_hash from response
             const { password_hash, ...userWithoutPassword } = user;
@@ -94,7 +87,7 @@ export class UserController {
                 data: {
                     user: userWithoutPassword,
                     org,
-                    apiKey: defaultApiKey
+
                 },
                 message: 'User created successfully'
             });

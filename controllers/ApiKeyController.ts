@@ -1,10 +1,9 @@
 import { FastifyRequest, FastifyReply } from 'fastify';
-import { ApiKeyModel, CreateApiKeyData, ApiKeyFilters } from '../models/ApiKey';
-import { AuthenticatedRequest } from '../middleware/auth';
+import { ApiKeyModel, ApiKeyFilters } from '../models/ApiKey';
 
 export class ApiKeyController {
     static async getAllApiKeys(
-        request: AuthenticatedRequest & FastifyRequest<{
+        request: FastifyRequest<{
             Querystring: {
                 active_only?: string;
                 limit?: string;
@@ -82,7 +81,7 @@ export class ApiKeyController {
     }
 
     static async getApiKeyById(
-        request: AuthenticatedRequest & FastifyRequest<{ Params: { id: string } }>,
+        request: FastifyRequest<{ Params: { id: string } }>,
         reply: FastifyReply
     ) {
         try {
@@ -98,7 +97,9 @@ export class ApiKeyController {
             }
 
             const apiKeyModel = new ApiKeyModel(request.server);
+
             const apiKey = await apiKeyModel.getById(id);
+
 
             if (!apiKey) {
                 return reply.code(404).send({
@@ -106,6 +107,8 @@ export class ApiKeyController {
                     message: 'API key not found'
                 });
             }
+
+
 
             // Ensure the API key belongs to the authenticated organization
             if (apiKey.organization_id !== request.organization_id) {
@@ -115,20 +118,11 @@ export class ApiKeyController {
                 });
             }
 
-            // Remove key_hash from response for security
-            const sanitizedKey = {
-                id: apiKey.id,
-                organization_id: apiKey.organization_id,
-                name: apiKey.name,
-                last_used_at: apiKey.last_used_at,
-                created_at: apiKey.created_at,
-                revoked_at: apiKey.revoked_at,
-                is_active: !apiKey.revoked_at
-            };
+
 
             return reply.code(200).send({
                 success: true,
-                data: sanitizedKey
+                data: apiKey
             });
         } catch (error) {
             request.log.error(error);
@@ -140,7 +134,7 @@ export class ApiKeyController {
     }
 
     static async createApiKey(
-        request: AuthenticatedRequest & FastifyRequest<{ Body: { name: string } }>,
+        request: FastifyRequest<{ Body: { name: string } }>,
         reply: FastifyReply
     ) {
         try {
@@ -193,7 +187,7 @@ export class ApiKeyController {
     }
 
     static async revokeApiKey(
-        request: AuthenticatedRequest & FastifyRequest<{ Params: { id: string } }>,
+        request: FastifyRequest<{ Params: { id: string } }>,
         reply: FastifyReply
     ) {
         try {
@@ -250,7 +244,7 @@ export class ApiKeyController {
     }
 
     static async deleteApiKey(
-        request: AuthenticatedRequest & FastifyRequest<{ Params: { id: string } }>,
+        request: FastifyRequest<{ Params: { id: string } }>,
         reply: FastifyReply
     ) {
         try {
