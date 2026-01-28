@@ -23,6 +23,7 @@
     "dotenv": "^17.2.3",
     "fastify": "^5.7.1",
     "fastify-auth0-verify": "^4.1.0",
+    "fastify-raw-body": "^5.0.0",
     "jsonwebtoken": "^9.0.3",
     "nodemon": "^3.1.11",
     "pg": "^8.17.1"
