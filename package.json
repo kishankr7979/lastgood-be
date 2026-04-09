@@ -4,7 +4,7 @@
   "description": "",
   "main": "server.ts",
   "scripts": {
-    "dev": "NODE_ENV=development nodemon --exec ts-node server.ts",
+    "dev": "NODE_ENV=local nodemon --exec ts-node server.ts",
     "dev:staging": "NODE_ENV=staging nodemon --exec ts-node server.ts",
     "start": "NODE_ENV=production node dist/server.js",
     "start:staging": "NODE_ENV=staging node dist/server.js",

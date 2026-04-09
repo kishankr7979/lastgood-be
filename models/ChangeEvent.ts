@@ -226,6 +226,11 @@ export class ChangeEventModel {
             const values: any[] = [];
             let paramCount = 1;
 
+            if (filters.organization_id) {
+                query += ` AND org_id = $${paramCount++}`;
+                values.push(filters.organization_id);
+            }
+
             // Apply same filters as getAll (excluding pagination)
             if (filters.service) {
                 query += ` AND service = $${paramCount++}`;
