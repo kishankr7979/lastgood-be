@@ -8,7 +8,9 @@ export async function registerDatabase(fastify: FastifyInstance) {
         await fastify.register(fastifyPostgres, {
             connectionString: `postgresql://${config.database.user}:${config.database.password}@${config.database.host}:${config.database.port}/${config.database.name}?options=-c%20search_path%3Ddevelopment`,
             ...(!isLocal && {
-                rejectUnauthorized: false,
+                ssl: {
+                    rejectUnauthorized: false,
+                }
             })
 
 
