@@ -153,6 +153,7 @@ export class ChangeEventController {
 
             // Validate required fields
             if (!occurred_at || !service || !environment || !type || !source || !summary) {
+
                 return reply.code(400).send({
                     success: false,
                     message: 'Missing required fields: occurred_at, service, environment, type, source, summary'

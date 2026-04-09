@@ -204,11 +204,11 @@ export class UserController {
                 success: true,
                 message: 'Password updated successfully'
             });
-        } catch (error) {
+        } catch (error: any) {
             request.log.error(error);
-            return reply.code(500).send({
+            return reply.code(400).send({
                 success: false,
-                message: error || 'Internal server error'
+                message: error.message || 'Internal server error'
             });
         }
     }

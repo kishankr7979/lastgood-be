@@ -3,12 +3,14 @@ import fastifyPostgres from '@fastify/postgres';
 import config from '../config/environment';
 
 export async function registerDatabase(fastify: FastifyInstance) {
+    const isLocal = config.nodeEnv === 'local'
     try {
         await fastify.register(fastifyPostgres, {
             connectionString: `postgresql://${config.database.user}:${config.database.password}@${config.database.host}:${config.database.port}/${config.database.name}?options=-c%20search_path%3Ddevelopment`,
-            ssl: {
+            ...(!isLocal && {
                 rejectUnauthorized: false,
-            }
+            })
+
 
             // Alternative object configuration:
             // host: config.database.host,

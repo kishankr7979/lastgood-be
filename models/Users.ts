@@ -86,15 +86,23 @@ export class UserModel {
     }
 
     async resetPassword(data: ResetPasswordData): Promise<User> {
-        const passwordHash = await this.hashPassword(data.new_password);
-
         const user = await this.findById(data.id);
 
-        if (user?.temp_pwd_reset) {
-            throw new Error('Default password already reset, Please go through forgot flow now');
-
-
+        if (!user) {
+            throw new Error('User not found');
         }
+
+        if (user.temp_pwd_reset) {
+            throw new Error('Default password already reset, Please go through forgot flow now');
+        }
+
+        const isSamePassword = await this.verifyPassword(data.new_password, user.password_hash);
+        if (isSamePassword) {
+            throw new Error('New password cannot be the same as the existing password');
+        }
+
+        const passwordHash = await this.hashPassword(data.new_password);
+
         const query = `
             UPDATE ${this.dbName}
             SET password_hash = $1, temp_pwd_reset = true
@@ -104,7 +112,6 @@ export class UserModel {
 
         const result = await this.pool.query(query, [passwordHash, data.id]);
         return result.rows[0];
-
     }
 
     async updateOrganization(userId: string, orgId: string): Promise<User | null> {

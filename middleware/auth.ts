@@ -61,7 +61,7 @@ export async function authenticateApiKey(
 
         // Look up the API key in the database
         const apiKeyModel = new ApiKeyModel(request.server);
-        const apiKeyRecord = await apiKeyModel.getByKeyHash(keyHash);
+        const apiKeyRecord = await apiKeyModel.getByKeyHash(apiKey);
 
         if (!apiKeyRecord) {
             return reply.code(401).send({
