@@ -21,6 +21,15 @@ export class ChangeEventController {
         try {
             const filters: ChangeEventFilters = {};
 
+            if (!request.user?.orgId) return reply.code(400).send({
+                success: false,
+                message: 'Organisation is missing or not registered'
+            });
+
+            // add orgnazation
+            if (request.user?.orgId) filters.organization_id = request.user?.orgId;
+
+
             // Parse query parameters
             if (request.query.service) filters.service = request.query.service;
             if (request.query.environment) filters.environment = request.query.environment;

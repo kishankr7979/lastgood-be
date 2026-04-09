@@ -1,7 +1,7 @@
 import { FastifyRequest, FastifyReply } from "fastify";
 import { ChangeEventService } from "../services/ChangeEvent";
-import {ApiKeyModel} from "../models/ApiKey";
-import {verifyGitHubSignature} from "../utils/validateGithubSignature";
+import { ApiKeyModel } from "../models/ApiKey";
+import { verifyGitHubSignature } from "../utils/validateGithubSignature";
 
 type GitHubWebhookParams = {
   orgId: string;
@@ -16,8 +16,8 @@ export class GitHubWebhookController {
     const signature = req.headers["x-hub-signature-256"];
     const { orgId } = req.params;
 
-    if(!signature || !req.rawBody) {
-        return reply.code(401).send({success: false, error: "You must respond with a valid signature"});
+    if (!signature || !req.rawBody) {
+      return reply.code(401).send({ success: false, error: "You must respond with a valid signature" });
     }
 
 
@@ -31,37 +31,37 @@ export class GitHubWebhookController {
     const apiKeyModel = new ApiKeyModel(req.server);
 
     const apiKey = await apiKeyModel.getById(orgId);
-      if (!apiKey) {
-          return reply.code(404).send({
-              success: false,
-              message: 'API key not found'
-          });
-      }
+    if (!apiKey) {
+      return reply.code(404).send({
+        success: false,
+        message: 'API key not found'
+      });
+    }
 
 
 
-      // Ensure the API key belongs to the authenticated organization
-      if (apiKey.organization_id !== orgId) {
-          return reply.code(404).send({
-              success: false,
-              message: 'API key not found'
-          });
-      }
+    // Ensure the API key belongs to the authenticated organization
+    if (apiKey.organization_id !== orgId) {
+      return reply.code(404).send({
+        success: false,
+        message: 'API key not found'
+      });
+    }
 
 
-      const key = apiKey.key_hash;
+    const key = apiKey.key_hash;
 
-      const isValid = verifyGitHubSignature({
-          payload: req.rawBody,
-          signature: String(signature),
-          secret: key
-      })
+    const isValid = verifyGitHubSignature({
+      payload: req.rawBody,
+      signature: String(signature),
+      secret: key
+    })
 
-      if (!isValid) {
-          return reply.code(401).send({ error: 'Invalid GitHub signature' });
-      }
+    if (!isValid) {
+      return reply.code(401).send({ error: 'Invalid GitHub signature' });
+    }
 
-    await ChangeEventService.ingestFromGitHub({
+    ChangeEventService.ingestFromGitHub({
       payload: req.body,
       eventType: String(eventType),
       organization_id: orgId,

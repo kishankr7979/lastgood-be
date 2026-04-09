@@ -12,11 +12,11 @@ export interface ChangeEvent {
 
 export class ChangeEventService {
     static async ingestFromGitHub({
-                                      payload,
-                                      eventType,
-                                      organization_id,
-                                      server
-                                  }: ChangeEvent) {
+        payload,
+        eventType,
+        organization_id,
+        server
+    }: ChangeEvent) {
         let normalizedEvent;
 
         switch (eventType) {
