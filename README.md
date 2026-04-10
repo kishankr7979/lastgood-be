@@ -1,4 +1,4 @@
-# Fastify MVC Project with PostgreSQL - Change Events API
+# Fastify MVC Project with PostgreSQL - Lastgood BE
 
 A Fastify project following the MVC pattern with PostgreSQL for managing change events across services and environments.
 
